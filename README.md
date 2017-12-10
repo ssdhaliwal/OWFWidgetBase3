@@ -8,16 +8,16 @@
 #### Screen captures:
 
 ![alt text][capture1]
-![alt text][capture2 | width=100]
-![alt text][capture3 | width=100]
-![alt text][capture4 | width=100]
-![alt text][capture5 | width=100]
+![alt text][capture2]
+![alt text][capture3]
+![alt text][capture4]
+![alt text][capture5]
 
-[capture1]: https://github.com/ssdhaliwal/OWFWidgetBase3/blob/master/images/OWFWidgetBase3-1.PNG "Capture 1"
-[capture2]: https://github.com/ssdhaliwal/OWFWidgetBase3/blob/master/images/OWFWidgetBase3-2.PNG "Capture 2"
-[capture3]: https://github.com/ssdhaliwal/OWFWidgetBase3/blob/master/images/OWFWidgetBase3-3.PNG "Capture 3"
-[capture4]: https://github.com/ssdhaliwal/OWFWidgetBase3/blob/master/images/OWFWidgetBase3-4.PNG "Capture 4"
-[capture5]: https://github.com/ssdhaliwal/OWFWidgetBase3/blob/master/images/OWFWidgetBase3-5.PNG "Capture 5"
+[capture1]: https://github.com/ssdhaliwal/OWFWidgetBase3/blob/master/images/OWFWidgetBase3-1.PNG | width=100 "Capture 1"
+[capture2]: https://github.com/ssdhaliwal/OWFWidgetBase3/blob/master/images/OWFWidgetBase3-2.PNG | width=100 "Capture 2"
+[capture3]: https://github.com/ssdhaliwal/OWFWidgetBase3/blob/master/images/OWFWidgetBase3-3.PNG | width=100 "Capture 3"
+[capture4]: https://github.com/ssdhaliwal/OWFWidgetBase3/blob/master/images/OWFWidgetBase3-4.PNG | width=100 "Capture 4"
+[capture5]: https://github.com/ssdhaliwal/OWFWidgetBase3/blob/master/images/OWFWidgetBase3-5.PNG | width=100 "Capture 5"
 
 ---
 ```
