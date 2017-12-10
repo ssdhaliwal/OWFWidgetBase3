@@ -1,8 +1,11 @@
 # OWFWidgetBase3
-Base widget example on how to use Require/Bootstrap/Handlebars etc
+## Base widget example on how to use Require/Bootstrap/Handlebars etc
 
-The widget displays buttons in title bar, using Bootstrap themes for grid layout.  It also uses Handlebars to create four components Card, CardDashboard, CardProperty, and CardWidget; to display details of the user properties.
-============================================================================
+#### The widget displays buttons in title bar, using Bootstrap themes for grid layout.  It also uses Handlebars to create four components Card, CardDashboard, CardProperty, and CardWidget; to display details of the user properties.
+
+#### The widget also uses dynamic loading of content (CSS and JS) in index.html to ensure caching is disabled for development environment.
+---
+```
 Directory Structure
 (root)
 |- descriptro
@@ -35,6 +38,6 @@ Directory Structure
 | app.js
 | index.html
 | server.js
-
-============================================================================
+```
+---
  License: MIT
