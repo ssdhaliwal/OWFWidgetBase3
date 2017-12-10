@@ -8,10 +8,10 @@
 #### Screen captures:
 
 ![alt text][capture1]
-![alt text][capture2]
-![alt text][capture3]
-![alt text][capture4]
-![alt text][capture5]
+![alt text][capture2 | width=100]
+![alt text][capture3 | width=100]
+![alt text][capture4 | width=100]
+![alt text][capture5 | width=100]
 
 [capture1]: https://github.com/ssdhaliwal/OWFWidgetBase3/blob/master/images/OWFWidgetBase3-1.PNG "Capture 1"
 [capture2]: https://github.com/ssdhaliwal/OWFWidgetBase3/blob/master/images/OWFWidgetBase3-2.PNG "Capture 2"
