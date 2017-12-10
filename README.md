@@ -8,9 +8,13 @@
 #### Screen captures:
 
 ![alt text][capture1]
+
 [capture1]: https://github.com/ssdhaliwal/OWFWidgetBase3/blob/master/images/OWFWidgetBase3-1.PNG "Capture 1"
 
-<img src="https://github.com/ssdhaliwal/OWFWidgetBase3/blob/master/images/OWFWidgetBase3-2.PNG" alt="Capture 2" style="width:100px">
+<img src="https://github.com/ssdhaliwal/OWFWidgetBase3/blob/master/images/OWFWidgetBase3-2.PNG" alt="Capture 2" width="100px">
+<img src="https://github.com/ssdhaliwal/OWFWidgetBase3/blob/master/images/OWFWidgetBase3-3.PNG" alt="Capture 3" width="100px">
+<img src="https://github.com/ssdhaliwal/OWFWidgetBase3/blob/master/images/OWFWidgetBase3-4.PNG" alt="Capture 4" width="100px">
+<img src="https://github.com/ssdhaliwal/OWFWidgetBase3/blob/master/images/OWFWidgetBase3-5.PNG" alt="Capture 5" width="100px">
 
 ---
 ```
