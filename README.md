@@ -5,6 +5,18 @@
 
 #### The widget also uses dynamic loading of content (CSS and JS) in index.html to ensure caching is disabled for development environment.
 ---
+#### Screen captures:
+
+Reference-style: 
+![alt text][logo]
+
+[capture1]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 2"
+[capture2]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 2"
+[capture3]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 2"
+[capture4]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 2"
+[capture5]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 2"
+
+---
 ```
 Directory Structure
 (root)
