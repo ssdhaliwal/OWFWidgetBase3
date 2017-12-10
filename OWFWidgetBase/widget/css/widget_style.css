@@ -1,0 +1,15 @@
+/* header area styles */
+
+
+/* article/content are styles */
+
+.cardInfo {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.btn-right {
+    float: right;
+}
+
+/* footer area styles */

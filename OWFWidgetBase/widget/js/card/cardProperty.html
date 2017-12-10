@@ -1,0 +1,21 @@
+{{#each cards as |card cardId|}}
+<div id="{{#if card.prefix}}{{card.prefix}}{{else}}card{{/if}}-{{cardId}}" class="cardProperty{{card.class}}" data-id="{{card.id}}">
+    <b>{{@key}}</b>
+    {{#each this}}
+    <div class="cardInfo">
+        <div class="cardPropertyDetails">
+            <b>Status</b> - {{status}}
+        </div>
+        <div class="cardPropertyDetails">
+            <b>Description</b> - {{description}}
+        </div>
+        <div class="cardPropertyDetails">
+            <b>Email</b> - {{email}}
+        </div>
+        <div class="cardPropertyDetails">
+            <b>Id</b> - {{id}}
+        </div>
+    </div>
+    {{/each}}
+</div>
+{{/each}}
