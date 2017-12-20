@@ -7,12 +7,12 @@ requirejs.config({
         cardProperty: "js/card/cardProperty",
         cardWidget: "js/card/cardWidget",
         cardDashboard: "js/card/cardDashboard",
-        bootstrap: "../vendor/js/bootstrap-3.3.7.min",
-        //underscore: "../vendor/js/underscore-1.8.3.min",
-        //backbone: "../vendor/js/backbone.min",
         jquery: "../vendor/js/jquery-3.2.1.min",
         lodash: "../vendor/js/lodash-4.17.4.min",
-        handlebars: "../vendor/js/handlebars-4.0.11.min"
+        handlebars: "../vendor/js/handlebars-4.0.11.min",
+        bootstrap: "../vendor/js/bootstrap-3.3.7.min",
+        //underscore: "../vendor/js/underscore-1.8.3.min",
+        //backbone: "../vendor/js/backbone.min"
     },
     shim: {
         //'underscore': {
@@ -22,13 +22,16 @@ requirejs.config({
         //    deps: ['jquery', 'underscore'],
         //    exports: 'Backbone'
         //},
+        "bootstrap": {
+            "deps": ['jquery']
+        },
         'handlebars': {
             exports: 'Handlebars'
         }
     }
 });
 
-requirejs(['jquery', 'lodash', 'handlebars', 'main'],
+requirejs(['jquery', 'lodash', 'handlebars', 'main', 'bootstrap'],
     function ($, lo, handlebars, main) {
         owfdojo.addOnLoad(function () {
             $(document).ready(function () {

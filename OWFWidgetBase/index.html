@@ -28,7 +28,7 @@
             // loop throught the data array and update the script tag
             // cannot update the object directly; have to use setAttribute
             if (data) {
-                data.forEach(function(item) {
+                data.forEach(function (item) {
                     for (var prop in item) {
                         eJS.setAttribute(prop, item[prop]);
                     };
@@ -53,38 +53,83 @@
 
         // add vendor javascripts
         loadJS("vendor/js/owf-widget.min.js?" + ver);
-        loadJS("vendor/js/require-2.3.5.min.js?" + ver, [{"data-main": "./app"}]);
+        loadJS("vendor/js/require-2.3.5.min.js?" + ver, [{
+            "data-main": "./app"
+        }]);
 
         // add core support/utilities and config scripts
     </script>
-    <div class="row-title row margin-zero">
-    <div class="col-xs-12 margin-zero center">
-        Demo Widget for OWF API
-    </div>
-    </div>
-    <div class="row-title row margin-zero">
-        <div class="col-xs-10 margin-zero left">
-            <button id="userInfo" type="button" class="btn btn-default btn-xs">User</button>
-            <button id="userUUID" type="button" class="btn btn-info btn-xs disabled">UUID</button>
-            <button id="userCounts" type="button" class="btn btn-info btn-xs disabled">Counts</button>
-            <button id="userGroups" type="button" class="btn btn-info btn-xs disabled">Groups</button>
-            <button id="userWidgets" type="button" class="btn btn-info btn-xs disabled">Widgets</button>
-            <button id="userDashboards" type="button" class="btn btn-info btn-xs disabled">Dashboards</button>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+                    aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Brand</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">User
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="#" id="userInfo">Info</a>
+                            </li>
+                            <li>
+                                <a href="#" id="userUUID" class="disabled">UUID</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Status
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="#" id="userCounts" class="disabled">Summary</a>
+                            </li>
+                            <li role="separator" class="divider"></li>
+                            <li>
+                                <a href="#" id="userGroups" class="disabled">Groups</a>
+                            </li>
+                            <li>
+                                <a href="#" id="userWidgets" class="disabled">Widgets</a>
+                            </li>
+                            <li role="separator" class="divider"></li>
+                            <li>
+                                <a href="#" id="userDashboards" class="disabled">Dashboards</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="#" id="reset">Reset</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
         </div>
-        <div class="col-xs-2 margin-zero right">
-            <button id="reset" type="button" class="btn btn-warning btn-xs btn-right">Reset</button>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <container>
+        <div class="container-fluid">
+            <div class="row-content row margin-zero">
+                <div id="dataDiv" class="column-top col-xs-12 margin-zero"></div>
+                <div id="infoDiv" class="column-bottom col-xs-12 margin-zero small"></div>
+            </div>
         </div>
-    </div>
-    <div class="row-content row margin-zero">
-        <div id="dataDiv" class="column-top margin-zero"></div>
-        <div id="infoDiv" class="column-bottom margin-zero small"></div>
-    </div>
-    <div class="row-status row margin-zero">
-        <div class="col-xs-12 margin-zero small">
-            Test info:
-            <a href="#">seraj dhaliwal</a>
-        </div>
-    </div>
+    </container>
     <div id="waitingImage" class="waitingImage">
         <image src="widget/images/loading_blue.gif" width="50px" height="50px"></image>
     </div>
