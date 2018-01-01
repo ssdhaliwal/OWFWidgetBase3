@@ -126,13 +126,6 @@ var WidgetObject = (function () {
         var self = this;
 
         // detect change to navbar size
-        $(".navbar-toggle").on('click', function () {});
-        $(".navbar-collapse").on('shown.bs.collapse', function () {
-            $("body").addClass("body-overflow");
-        });
-        $(".navbar-collapse").on('hidden.bs.collapse', function () {
-            $("body").removeClass("body-overflow");
-        });
         
         // detect change to the div
         self._dataDiv.on('DOMNodeInserted DOMNodeRemoved', function () {

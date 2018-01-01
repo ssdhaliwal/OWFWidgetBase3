@@ -46,6 +46,7 @@
         // add css for core items
         loadCSS("vendor/css/bootstrap.min.css?" + ver);
         loadCSS("vendor/css/dragAndDrop.css?" + ver);
+        loadCSS("vendor/css/jquery.smartmenus.bootstrap.css?" + ver);
 
         // add css for widget specific
         loadCSS("widget/css/base_style.css?" + ver);
@@ -59,68 +60,67 @@
 
         // add core support/utilities and config scripts
     </script>
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
-                    aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">Brand</a>
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">User
-                            <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="#" id="userInfo">Info</a>
-                            </li>
-                            <li>
-                                <a href="#" id="userUUID" class="disabled">UUID</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Status
-                            <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="#" id="userCounts" class="disabled">Summary</a>
-                            </li>
-                            <li role="separator" class="divider"></li>
-                            <li>
-                                <a href="#" id="userGroups" class="disabled">Groups</a>
-                            </li>
-                            <li>
-                                <a href="#" id="userWidgets" class="disabled">Widgets</a>
-                            </li>
-                            <li role="separator" class="divider"></li>
-                            <li>
-                                <a href="#" id="userDashboards" class="disabled">Dashboards</a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="#" id="reset">Reset</a>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
+    <!-- Navbar -->
+    <div class="navbar navbar-default" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">WidgetBase</a>
         </div>
-        <!-- /.container-fluid -->
-    </nav>
+        <div class="navbar-collapse collapse">
+
+            <!-- Left nav -->
+            <ul class="nav navbar-nav">
+                <li>
+                    <a href="#">User
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#" id="userInfo">Info</a>
+                        </li>
+                        <li>
+                            <a href="#" id="userUUID" class="disabled">UUID</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li class="dropdown-header">Status</li>
+                        <li>
+                            <a href="#" id="userCounts" class="disabled">Summary</a>
+                        </li>
+                        <li>
+                            <a href="#">View(s)
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="#" id="userGroups" class="disabled">Groups</a>
+                                </li>
+                                <li>
+                                    <a href="#" id="userWidgets" class="disabled">Widgets</a>
+                                </li>
+                                <li>
+                                    <a href="#" id="userDashboards" class="disabled">Dashboards</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- Right nav -->
+            <ul class="nav navbar-nav navbar-right">
+                <li class="active">
+                    <a href="#" id="reset">RESET</a>
+                </li>
+            </ul>
+
+        </div>
+        <!--/.nav-collapse -->
+    </div>
 
     <container>
         <div class="container-fluid">
