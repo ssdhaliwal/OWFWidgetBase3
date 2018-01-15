@@ -1,5 +1,3 @@
-{{#each cards as |card cardId|}}
-<div id="{{#if card.prefix}}{{card.prefix}}{{else}}card{{/if}}-{{cardId}}" class="card{{card.class}}" data-id="{{card.id}}">
-    <b>{{card.key}}</b> - {{card.value}}
+<div id="{{#if prefix}}{{prefix}}{{else}}card{{/if}}-{{cardId}}" class="card {{class}}" data-id="{{id}}">
+    <b>{{key}}</b> - {{value}}
 </div>
-{{/each}}

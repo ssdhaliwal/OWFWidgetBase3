@@ -12,115 +12,37 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <!-- load dojo config before other css/scripts -->
+    <script src="./dojoConfig.js"></script>
+
     <!-- dynamic loading of scripts for cache busting -->
     <script type="text/javascript">
-        var loadCSS = function (refCSS) {
-            var eCSS = document.createElement("link");
-            eCSS.rel = "stylesheet";
-            eCSS.href = refCSS;
-            document.getElementsByTagName('head')[0].appendChild(eCSS);
+        var loadCSS = function (src) {
+            document.writeln('<link rel="stylesheet" href="' + src + '">');
         }
-        var loadJS = function (refJS, data) {
-            var eJS = document.createElement("script");
-            eJS.type = 'text/javascript';
-            eJS.src = refJS;
-
-            // loop throught the data array and update the script tag
-            // cannot update the object directly; have to use setAttribute
-            if (data) {
-                data.forEach(function (item) {
-                    for (var prop in item) {
-                        eJS.setAttribute(prop, item[prop]);
-                    };
-                });
-            }
-            document.getElementsByTagName('head')[0].appendChild(eJS);
+        var loadJS = function (src) {
+            document.writeln('<script src="' + src + '"><\/script>');
         }
     </script>
 </head>
 
-<body>
+<body class="claro">
     <script type="text/javascript">
         var ver = "ver=" + (new Date()).getTime();
 
         // add css for core items
-        loadCSS("vendor/css/bootstrap.min.css?" + ver);
         loadCSS("vendor/css/dragAndDrop.css?" + ver);
-        loadCSS("vendor/css/jquery.smartmenus.bootstrap.css?" + ver);
+        loadCSS("vendor/dojo/dijit/themes/claro/claro.css?" + ver);
+        loadCSS("vendor/fonts/material-icons.css?" + ver);
+        loadCSS("vendor/css/bootstrap.min.css?" + ver);
 
         // add css for widget specific
         loadCSS("widget/css/base_style.css?" + ver);
         loadCSS("widget/css/widget_style.css?" + ver);
-
-        // add vendor javascripts
-        loadJS("vendor/js/owf-widget.min.js?" + ver);
-        loadJS("vendor/js/require-2.3.5.min.js?" + ver, [{
-            "data-main": "./app"
-        }]);
-
-        // add core support/utilities and config scripts
     </script>
+
     <!-- Navbar -->
-    <div class="navbar navbar-default" role="navigation">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">WidgetBase</a>
-        </div>
-        <div class="navbar-collapse collapse">
-
-            <!-- Left nav -->
-            <ul class="nav navbar-nav">
-                <li>
-                    <a href="#">User
-                        <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="#" id="userInfo">Info</a>
-                        </li>
-                        <li>
-                            <a href="#" id="userUUID" class="disabled">UUID</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li class="dropdown-header">Status</li>
-                        <li>
-                            <a href="#" id="userCounts" class="disabled">Summary</a>
-                        </li>
-                        <li>
-                            <a href="#">View(s)
-                                <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="#" id="userGroups" class="disabled">Groups</a>
-                                </li>
-                                <li>
-                                    <a href="#" id="userWidgets" class="disabled">Widgets</a>
-                                </li>
-                                <li>
-                                    <a href="#" id="userDashboards" class="disabled">Dashboards</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-
-            <!-- Right nav -->
-            <ul class="nav navbar-nav navbar-right">
-                <li class="active">
-                    <a href="#" id="reset">RESET</a>
-                </li>
-            </ul>
-
-        </div>
-        <!--/.nav-collapse -->
-    </div>
+    <div id="menuWrapper"></div>
 
     <container>
         <div class="container-fluid">
@@ -130,9 +52,18 @@
             </div>
         </div>
     </container>
+
     <div id="waitingImage" class="waitingImage">
         <image src="widget/images/loading_blue.gif" width="50px" height="50px"></image>
     </div>
+
+    <script src="vendor/dojo/dojo/dojo.js"></script>
+    <script src="vendor/js/owf-widget.min.js"></script>
+    <script src="vendor/js/jquery-3.2.1.min.js"></script>
+
+    <script src="vendor/js/date.format-1.2.3.js"></script>
+
+    <script src="./app.js"></script>
 </body>
 
 </html>

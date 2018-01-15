@@ -3,10 +3,62 @@ OWF.relayFile = "../../vendor/js/eventing/rpc_relay.uncompressed.html";
 owfdojo.config.dojoBlankHtmlUrl = '../../vendor/js/dojo-1.5.0-windowname-only/dojo/resources/blank.html';
 
 // widget object wrapper
-var WidgetObject = (function () {
+define(["handlebars", "lodash", "luxon",
+    "widgetConfig", "card", "cardDashboard", "cardProperty", "cardWidget",
+    "dijit/registry", "dojo/dom-style",
+    "dijit/MenuBar", "dijit/Menu", "dijit/DropDownMenu", "dijit/MenuSeparator",
+    "dijit/MenuItem", "dijit/PopupMenuItem", "dijit/PopupMenuBarItem",
+    "notify", "dojo/domReady!"
+], function (Handlebars, _, Luxon,
+    WidgetConfig, Card, CardDashboard, CardProperty, CardWidget,
+    registry, domStyle,
+    MenuBar, Menu, DropDownMenu, MenuSeparator, MenuItem, PopupMenuItem, PopupMenuBarItem) {
     // static variables
 
     // static objects
+    window.Handlebars = Handlebars;
+    window.Luxon = Luxon;
+
+    // https://stackoverflow.com/questions/8853396/logical-operator-in-a-handlebars-js-if-conditional
+    Handlebars.registerHelper('ifCond', function (v1, v2, options) {
+        return (v1 === v2) ? options.fn(this) : options.inverse(this);
+    });
+    Handlebars.registerHelper('ifCond2', function (v1, operator, v2, options) {
+
+        switch (operator) {
+            case '==':
+                return (v1 == v2) ? options.fn(this) : options.inverse(this);
+            case '===':
+                return (v1 === v2) ? options.fn(this) : options.inverse(this);
+            case '!=':
+                return (v1 != v2) ? options.fn(this) : options.inverse(this);
+            case '!==':
+                return (v1 !== v2) ? options.fn(this) : options.inverse(this);
+            case '<':
+                return (v1 < v2) ? options.fn(this) : options.inverse(this);
+            case '<=':
+                return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+            case '>':
+                return (v1 > v2) ? options.fn(this) : options.inverse(this);
+            case '>=':
+                return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+            case '&&':
+                return (v1 && v2) ? options.fn(this) : options.inverse(this);
+            case '||':
+                return (v1 || v2) ? options.fn(this) : options.inverse(this);
+            default:
+                return options.inverse(this);
+        }
+    });
+
+    // https://stackoverflow.com/questions/26715805/handlebarsjs-registerhelper-for-comparing-two-dates
+    Handlebars.registerHelper("ifPassed", function (dueDate, matchDate, options) {
+        if (Luxon.DateTime.fromISO(dueDate).isAfter(Luxon.DateTime.fromISO(matchDate))) {
+            return options.fn(this);
+        } else {
+            return options.inverse(this);
+        }
+    });
 
     var Widget = function () {
         // global class variables
@@ -17,6 +69,7 @@ var WidgetObject = (function () {
         this._WidgetStateController = null;
 
         // user object
+        this._config = new WidgetConfig();
         this._OWF = {};
 
         // timer tracking
@@ -30,18 +83,12 @@ var WidgetObject = (function () {
         this._cardProperty = null;
         this._cardWidget = null;
         this._cardDashboard = null;
-        
+
         // widget elements
         this._dataDiv = $("#dataDiv");
         this._infoDiv = $("#infoDiv");
 
         // widget buttons
-        this._btnUserInfo = $("#userInfo");
-        this._btnUserUUID = $("#userUUID");
-        this._btnUserCounts = $("#userCounts");
-        this._btnUserGroups = $("#userGroups");
-        this._btnUserWidgets = $("#userWidgets");
-        this._btnUserDashboards = $("#userDashboards");
         this._btnReset = $("#reset");
     }
 
@@ -117,6 +164,27 @@ var WidgetObject = (function () {
         //  return false;
         //});
 
+        $.notify.addStyle('happyblue', {
+            html: "<div><div class='clearfix'><div id='title' data-notify-html='title'></div></div></div>",
+            classes: {
+                base: {
+                    "white-space": "nowrap",
+                    "background-color": "lightblue",
+                    "padding": "5px"
+                },
+                superblue: {
+                    "color": "white",
+                    "background-color": "blue"
+                }
+            }
+        });
+
+        $.notify.defaults({
+            autoHide: false,
+            clickToHide: true,
+            style: 'happyblue'
+        });
+
         // global resize event
         $(window).resize(function () {});
     }
@@ -126,49 +194,13 @@ var WidgetObject = (function () {
         var self = this;
 
         // detect change to navbar size
-        
+
         // detect change to the div
         self._dataDiv.on('DOMNodeInserted DOMNodeRemoved', function () {
             self.scrollDataDivToBottom();
         });
         self._infoDiv.on('DOMNodeInserted DOMNodeRemoved', function () {
-            self.scrollInfoDivToBottom();
-        });
-
-        // click handler for userInfo button
-        self._btnUserInfo.click(function () {
-            self.getUserInfo();
-        });
-
-        // click handler for reset button
-        self._btnReset.click(function () {
-            self.clearReset();
-            self.getOwfInfo();
-        });
-
-        // click handler for UUID button
-        self._btnUserUUID.click(function () {
-            self.getUserUUID();
-        });
-
-        // click handler for Counts button
-        self._btnUserCounts.click(function () {
-            self.getUserCounts();
-        });
-
-        // click handler for Group button
-        self._btnUserGroups.click(function () {
-            self.getUserGroups();
-        });
-
-        // click handler for Widgets button
-        self._btnUserWidgets.click(function () {
-            self.getUserWidgets();
-        });
-
-        // click handler for Dashboards button
-        self._btnUserDashboards.click(function () {
-            self.getUserDashboards();
+            self.scrollInfoDivToTop();
         });
     }
 
@@ -177,9 +209,13 @@ var WidgetObject = (function () {
         var d = new Date();
         var dtg = d.format(dateFormat.masks.isoTime);
 
-        $("#infoDiv").append(dtg + ", " + type + ", " + message +
-            ((statusMessage === undefined) ? "" : ", " + statusMessage));
-        $("#infoDiv").append("<br/>");
+        // append content
+        //$("#infoDiv").append(dtg + ", " + type + ", " + message +
+        //    ((statusMessage === undefined) ? "" : ", " + statusMessage) +
+        //    "<br/>");
+        $("#infoDiv").prepend(dtg + ", " + type + ", " + message +
+            ((statusMessage === undefined) ? "" : ", " + statusMessage) +
+            "<br/>");
 
         if ((message !== undefined) && (message !== null) && (message.length !== 0)) {
             if ((type !== undefined) && (type !== null) && (type.length !== 0)) {
@@ -236,8 +272,7 @@ var WidgetObject = (function () {
     }
 
     // initialize for class (fixes the html components)
-    Widget.prototype.initialize = function (CardObject, CardPropertyObject,
-        CardWidgetObject, CardDashboardObject) {
+    Widget.prototype.initialize = function () {
         var self = this;
 
         // set initial state of the controls
@@ -262,32 +297,16 @@ var WidgetObject = (function () {
         });
 
         // initialize external objects
-        self._card = new CardObject();
-        self._card.initialize();
-
-        self._cardProperty = new CardPropertyObject();
-        self._cardProperty.initialize();
-
-        self._cardWidget = new CardWidgetObject();
-        self._cardWidget.initialize();
-
-        self._cardDashboard = new CardDashboardObject();
-        self._cardDashboard.initialize();
+        self._card = new Card();
+        self._cardProperty = new CardProperty();
+        self._cardWidget = new CardWidget();
+        self._cardDashboard = new CardDashboard();
 
         // wait for card library to be loaded
         // use below code to make sure document is fully loaded due to template
         // loading javascript before the entire page is loaded
         self.owner = this;
         self._Interval.t1 = setInterval(function () {
-            if (!self._card.isReady())
-                return;
-            if (!self._cardProperty.isReady())
-                return;
-            if (!self._cardWidget.isReady())
-                return;
-            if (!self._cardDashboard.isReady())
-                return;
-
             clearInterval(self._Interval.t1);
             self.waitingStatus();
 
@@ -300,49 +319,149 @@ var WidgetObject = (function () {
             self.displayNotification("widget initialization complete", "info");
             self.waitingStatus();
 
+            // create menu
+            self.createMenu();
+
             // display the base OWF info
             self.getOwfInfo();
 
         }, 1000);
     }
+
+    Widget.prototype.createMenu = function () {
+        var self = this;
+
+        var pMenuBar = new MenuBar({});
+
+        var pSubMenu = new DropDownMenu({});
+        pSubMenu.addChild(new MenuItem({
+            id: "menuUserInfo",
+            label: "Info",
+            onClick: self.getUserInfo.bind(self)
+        }));
+        pSubMenu.addChild(new MenuItem({
+            id: "menuUserUUID",
+            label: "UUID",
+            disabled: true,
+            onClick: self.getUserUUID.bind(self)
+        }));
+        pSubMenu.addChild(new MenuItem({
+            id: "menuUserSummary",
+            label: "Summary",
+            disabled: true,
+            onClick: self.getUserCounts.bind(self)
+        }));
+        pSubMenu.addChild(new MenuSeparator({}));
+        var pViewMenu = new DropDownMenu({});
+        pViewMenu.addChild(new MenuItem({
+            id: "menuUserGroups",
+            label: "Groups",
+            disabled: true,
+            onClick: self.getUserGroups.bind(self)
+        }));
+        pViewMenu.addChild(new MenuItem({
+            id: "menuUserWidgets",
+            label: "Widgets",
+            disabled: true,
+            onClick: self.getUserWidgets.bind(self)
+        }));
+        pViewMenu.addChild(new MenuItem({
+            id: "menuUserDashboard",
+            label: "Dashboard",
+            disabled: true,
+            onClick: self.getUserDashboards.bind(self)
+        }));
+        pSubMenu.addChild(new PopupMenuItem({
+            label: "View(s)",
+            popup: pViewMenu
+        }));
+        pMenuBar.addChild(new PopupMenuBarItem({
+            label: "User",
+            popup: pSubMenu
+        }));
+        var pSubMenu2 = new DropDownMenu({});
+        pSubMenu2.addChild(new MenuItem({
+            id: "menuAbout",
+            label: "About",
+            onClick: self.getAbout.bind(self)
+        }));
+        pSubMenu2.addChild(new MenuSeparator({}));
+        pSubMenu2.addChild(new MenuItem({
+            id: "menuReset",
+            label: "RESET",
+            onClick: function () {
+                self.clearReset();
+                self.getOwfInfo();
+            }
+        }));
+        var mnuHelp = new PopupMenuBarItem({
+            label: "HELP",
+            popup: pSubMenu2
+        });
+        domStyle.set(mnuHelp.domNode, 'float', 'right');
+        pMenuBar.addChild(mnuHelp);
+
+        pMenuBar.placeAt("menuWrapper");
+        pMenuBar.startup();
+    }
+
+    Widget.prototype.notifyError = function (msg) {
+        $.notify(msg, {
+            className: "error",
+            autoHide: false
+        });
+    };
+
+    Widget.prototype.notifyInfo = function (msg) {
+        $.notify(msg, {
+            className: "info",
+            autoHide: true,
+            autoHideDelay: 5000
+        });
+    };
     // -----  end  ----- common widget functions -----  end  ----
 
     // ----- start ----- widget UI functions     ----- start ----
-    Widget.prototype.clearReset = function() {
+    Widget.prototype.clearReset = function () {
         var self = this;
 
         // clear current info
         self._OWF = {};
-        self._dataDiv.text("");
-        
-        // clear all event handlers
-        $("body").off("click", ".owfInfoClass");
-        $("body").off("click", ".userInfoClass");
-        $("body").off("click", ".uuidInfoClass");
-        $("body").off("click", ".userSummaryClass");
+
+        // clear all children correctly; this removes the attached events also
+        self._dataDiv.children().remove();
+
+        // clear any text nodes
+        self._dataDiv.html("");
 
         // update button status
-        self.disableButtons();        
+        self.disableButtons();
     }
 
     Widget.prototype.enableButtons = function () {
         var self = this;
 
-        self._btnUserUUID.removeClass("disabled");
-        self._btnUserCounts.removeClass("disabled");
-        self._btnUserGroups.removeClass("disabled");
-        self._btnUserWidgets.removeClass("disabled");
-        self._btnUserDashboards.removeClass("disabled");
+        registry.byId("menuUserUUID").set("disabled", false);
+        registry.byId("menuUserSummary").set("disabled", false);
+        registry.byId("menuUserGroups").set("disabled", false);
+        registry.byId("menuUserWidgets").set("disabled", false);
+        registry.byId("menuUserDashboard").set("disabled", false);
     }
 
     Widget.prototype.disableButtons = function () {
         var self = this;
 
-        self._btnUserUUID.addClass("disabled");
-        self._btnUserCounts.addClass("disabled");
-        self._btnUserGroups.addClass("disabled");
-        self._btnUserWidgets.addClass("disabled");
-        self._btnUserDashboards.addClass("disabled");
+        registry.byId("menuUserUUID").set("disabled", true);
+        registry.byId("menuUserSummary").set("disabled", true);
+        registry.byId("menuUserGroups").set("disabled", true);
+        registry.byId("menuUserWidgets").set("disabled", true);
+        registry.byId("menuUserDashboard").set("disabled", true);
+    }
+
+    Widget.prototype.scrollDataDivToTop = function () {
+        var self = this;
+
+        self._dataDiv.scrollTop(0);
     }
 
     Widget.prototype.scrollDataDivToBottom = function () {
@@ -351,52 +470,58 @@ var WidgetObject = (function () {
         self._dataDiv.scrollTop(self._dataDiv[0].scrollHeight);
     }
 
+    Widget.prototype.scrollInfoDivToTop = function () {
+        var self = this;
+
+        self._infoDiv.scrollTop(0);
+    }
+
     Widget.prototype.scrollInfoDivToBottom = function () {
         var self = this;
 
         self._infoDiv.scrollTop(self._infoDiv[0].scrollHeight);
     }
 
-    Widget.prototype.onClickOwfInfo = function(target) {
+    Widget.prototype.onClickOwfInfo = function (target) {
         var self = this;
 
-        self._infoDiv.append(".. clicked: " + target.id + ", " + $(target).data("id") + "<br/>");
+        self._infoDiv.prepend(".. clicked: " + target[0].id + ", " + $(target).data("id") + "<br/>");
     }
 
-    Widget.prototype.onClickUserInfo = function(target) {
+    Widget.prototype.onClickUserInfo = function (target) {
         var self = this;
 
-        self._infoDiv.append(".. clicked: " + target.id + ", " + $(target).data("id") + "<br/>");
+        self._infoDiv.prepend(".. clicked: " + target[0].id + ", " + $(target).data("id") + "<br/>");
     }
 
-    Widget.prototype.onClickUUIDInfo = function(target) {
+    Widget.prototype.onClickUUIDInfo = function (target) {
         var self = this;
 
-        self._infoDiv.append(".. clicked: " + target.id + ", " + $(target).data("id") + "<br/>");
+        self._infoDiv.prepend(".. clicked: " + target[0].id + ", " + $(target).data("id") + "<br/>");
     }
 
-    Widget.prototype.onClickSummaryInfo = function(target) {
+    Widget.prototype.onClickSummaryInfo = function (target) {
         var self = this;
 
-        self._infoDiv.append(".. clicked: " + target.id + ", " + $(target).data("id") + "<br/>");
+        self._infoDiv.prepend(".. clicked: " + target[0].id + ", " + $(target).data("id") + "<br/>");
     }
 
-    Widget.prototype.onClickGroupInfo = function(target) {
+    Widget.prototype.onClickGroupInfo = function (target) {
         var self = this;
 
-        self._infoDiv.append(".. clicked: " + target.id + ", " + $(target).data("id") + "<br/>");
+        self._infoDiv.prepend(".. clicked: " + target[0].id + ", " + $(target).data("id") + "<br/>");
     }
 
-    Widget.prototype.onClickWidgetInfo = function(target) {
+    Widget.prototype.onClickWidgetInfo = function (target) {
         var self = this;
 
-        self._infoDiv.append(".. clicked: " + target.id + ", " + $(target).data("id") + "<br/>");
+        self._infoDiv.prepend(".. clicked: " + target[0].id + ", " + $(target).data("id") + "<br/>");
     }
 
-    Widget.prototype.onClickDashboardInfo = function(target) {
+    Widget.prototype.onClickDashboardInfo = function (target) {
         var self = this;
 
-        self._infoDiv.append(".. clicked: " + target.id + ", " + $(target).data("id") + "<br/>");
+        self._infoDiv.prepend(".. clicked: " + target[0].id + ", " + $(target).data("id") + "<br/>");
     }
     // -----  end  ----- widget UI functions     -----  end  ----
 
@@ -408,7 +533,7 @@ var WidgetObject = (function () {
 
         // display the config
         self._dataDiv.append("<b>CONFIG: </b>");
-        self._dataDiv.append(JSON.stringify(gConfigObject));
+        self._dataDiv.append(JSON.stringify(self._config));
         self._dataDiv.append("<br/><hr/>");
 
         // populate the owf info into object var
@@ -424,90 +549,63 @@ var WidgetObject = (function () {
         self._OWF.widgetGuid = OWF.getWidgetGuid();
         self._OWF.isDashboardLocked = OWF.isDashboardLocked();
 
-        // display the OWF info w/o user info
-        self._dataDiv.append("<b>OWF Info: </b><br/>");
+        // remove old info from the div
+        $("#cardInfoOWFWrapper").remove();
 
         var count = 0;
-        var tmpDiv = $('<div class="cardInfo"></div>');
-        var html = this._card.createCard({
-            "cards": [{
-                "prefix": "cardOWF",
-                "id": 1001,
-                "class": " owfInfoClass",
+        var tmpDiv = $('<div id="cardInfoOWFWrapper"><b>OWF Info: </b><br/><div id="cardInfoOWF" class="cardInfo"></div><br/><hr/></div>');
+        tmpDiv.appendTo(self._dataDiv);
+        this._card.initialize({
+            "1001": {
                 "key": "Container Name",
                 "value": self._OWF.containerName
-            }, {
-                "prefix": "cardOWF",
-                "id": 1002,
-                "class": " owfInfoClass",
+            },
+            "1002": {
                 "key": "Container Url",
                 "value": self._OWF.containerUrl
-            }, {
-                "prefix": "cardOWF",
-                "id": 1003,
-                "class": " owfInfoClass",
+            },
+            "1003": {
                 "key": "Container Version",
                 "value": self._OWF.containerVersion
-            }, {
-                "prefix": "cardOWF",
-                "id": 1004,
-                "class": " owfInfoClass",
+            },
+            "1004": {
                 "key": "Current Theme",
                 "value": self._OWF.currentTheme
-            }, {
-                "prefix": "cardOWF",
-                "id": 1005,
-                "class": " owfInfoClass",
+            },
+            "1005": {
                 "key": "Dashboard Layout",
                 "value": self._OWF.dashboardLayout
-            }, {
-                "prefix": "cardOWF",
-                "id": 1006,
-                "class": " owfInfoClass",
+            },
+            "1006": {
                 "key": "Iframe Id",
                 "value": self._OWF.IframeId
-            }, {
-                "prefix": "cardOWF",
-                "id": 1007,
-                "class": " owfInfoClass",
+            },
+            "1007": {
                 "key": "Instance Id",
                 "value": self._OWF.instanceId
-            }, {
-                "prefix": "cardOWF",
-                "id": 1008,
-                "class": " owfInfoClass",
+            },
+            "1008": {
                 "key": "URL",
                 "value": self._OWF.url
-            }, {
-                "prefix": "cardOWF",
-                "id": 1009,
-                "class": " owfInfoClass",
+            },
+            "1009": {
                 "key": "Version",
                 "value": self._OWF.version
-            }, {
-                "prefix": "cardOWF",
-                "id": 1010,
-                "class": " owfInfoClass",
+            },
+            "1010": {
                 "key": "Widget Guid",
                 "value": self._OWF.widgetGuid
-            }, {
-                "prefix": "cardOWF",
-                "id": 1011,
-                "class": " owfInfoClass",
+            },
+            "1011": {
                 "key": "Is Dashboard Locked",
                 "value": self._OWF.isDashboardLocked
-            }]
-        }, ".owfInfoClass", self.onClickOwfInfo);
-
-        $(html).appendTo(tmpDiv);
-        tmpDiv.appendTo(self._dataDiv);
-        self._dataDiv.append("<br/><hr/>");
-
-        // global event for all card classes
-        $("body").off("click", ".owfInfoClass");
-        $("body").on("click", ".owfInfoClass", function (event) {
-            //self._infoDiv.append(".. clicked: " + this.id + ", " + $(this).data("id") + "<br/>");
-            self.onClickOwfInfo(this);
+            }
+        }, {
+            "prefix": "cardOWF",
+            "class": "owfInfoClass",
+            "element": "cardInfoOWF",
+            "append": true,
+            "callback": self.onClickOwfInfo.bind(self)
         });
 
         // update buttons - show userInfo and disable others
@@ -535,55 +633,40 @@ var WidgetObject = (function () {
         self._OWF.user.currentId = userInfo.currentId;
         self._OWF.user.email = userInfo.email;
 
-        // display the user info
-        self._dataDiv.append("<b>User Info: </b><br/>");
+        // remove old info from the div
+        $("#cardInfoUSERWrapper").remove();
         //var user = _.omit(self._OWF.user, ["summary", "groups", "widgets", "dashboards"]);
 
         var count = 0;
-        var tmpDiv = $('<div class="cardInfo"></div>');
-        var html = this._card.createCard({
-            "cards": [{
-                "prefix": "cardUser",
-                "id": 1001,
-                "class": " userInfoClass",
+        var tmpDiv = $('<div id="cardInfoUSERWrapper"><b>OWF User: </b><br/><div id="cardInfoUSER" class="cardInfo"></div><br/><hr/></div>');
+        tmpDiv.appendTo(self._dataDiv);
+        var html = this._card.initialize({
+            "1001": {
                 "key": "User Name",
                 "value": self._OWF.user.currentUserName
-            }, {
-                "prefix": "cardUser",
-                "id": 1002,
-                "class": " userInfoClass",
+            },
+            "1002": {
                 "key": "User",
                 "value": self._OWF.user.currentUser
-            }, {
-                "prefix": "cardUser",
-                "id": 1003,
-                "class": " userInfoClass",
+            },
+            "1003": {
                 "key": "Prev Login",
                 "value": self._OWF.user.currentUserPrevLogin
-            }, {
-                "prefix": "cardUser",
-                "id": 1004,
-                "class": " userInfoClass",
+            },
+            "1004": {
                 "key": "Id",
                 "value": self._OWF.user.currentId
-            }, {
-                "prefix": "cardUser",
-                "id": 1005,
-                "class": " userInfoClass",
+            },
+            "1005": {
                 "key": "Email",
                 "value": self._OWF.user.email
-            }]
-        });
-
-        $(html).appendTo(tmpDiv);
-        tmpDiv.appendTo(self._dataDiv);
-        self._dataDiv.append("<br/><hr/>");
-
-        // global event for all card classes
-        $("body").off("click", ".userInfoClass");
-        $("body").on("click", ".userInfoClass", function (event) {
-            //self._infoDiv.append(".. clicked: " + this.id + ", " + $(this).data("id") + "<br/>");
-            self.onClickUserInfo(this);
+            }
+        }, {
+            "prefix": "cardUser",
+            "class": "userInfoClass",
+            "element": "cardInfoUSER",
+            "append": true,
+            "callback": self.onClickUserInfo.bind(self)
         });
 
         self.enableButtons();
@@ -616,34 +699,27 @@ var WidgetObject = (function () {
             onFailure: owfdojo.hitch(self, "onGetUserUUIDFailure")
         });
     }
-    
-    Widget.prototype.displayUserUUID = function() {
+
+    Widget.prototype.displayUserUUID = function () {
         var self = this;
 
-        // display the user info
-        self._dataDiv.append("<b>OWF User UUID: </b><br/>");
-        
+        // remove old info from the div
+        $("#cardInfoUUIDWrapper").remove();
+
         var count = 0;
-        var tmpDiv = $('<div class="cardInfo"></div>');
-        var html = this._card.createCard({
-            "cards": [{
-                "prefix": "cardUUID",
-                "id": 1001,
-                "class": " uuidInfoClass",
+        var tmpDiv = $('<div id="cardInfoUUIDWrapper"><b>OWF User UUID: </b><br/><div id="cardInfoUUID" class="cardInfo"></div><br/><hr/></div>');
+        tmpDiv.appendTo(self._dataDiv);
+        var html = this._card.initialize({
+            "1001": {
                 "key": "UUID",
                 "value": self._OWF.user.uuid
-            }]
-        });
-        
-        $(html).appendTo(tmpDiv);
-        tmpDiv.appendTo(self._dataDiv);
-        self._dataDiv.append("<br/><hr/>");
-
-        // global event for all card classes
-        $("body").off("click", ".uuidInfoClass");
-        $("body").on("click", ".uuidInfoClass", function (event) {
-            //self._infoDiv.append(".. clicked: " + this.id + ", " + $(this).data("id") + "<br/>");
-            self.onClickUUIDInfo(this);
+            }
+        }, {
+            "prefix": "cardUUID",
+            "class": "uuidInfoClass",
+            "element": "cardInfoUUID",
+            "append": true,
+            "callback": self.onClickUUIDInfo.bind(self)
         });
     }
 
@@ -718,55 +794,40 @@ var WidgetObject = (function () {
         self._OWF.user.summary.totalWidgets = value.data[0].totalWidgets;
         self._OWF.user.summary.totalDashboards = value.data[0].totalDashboards;
 
-        // display the user info
-        self._dataDiv.append("<b>OWF User Info (summary): </b><br/>");
-        //self._dataDiv.append(JSON.stringify(self._OWF.user.summary));
+        // remove old info from the div
+        $("#cardInfoSummaryWrapper").remove();
+        //var user = _.omit(self._OWF.user, ["summary", "groups", "widgets", "dashboards"]);
 
         var count = 0;
-        var tmpDiv = $('<div class="cardInfo"></div>');
-        var html = this._card.createCard({
-            "cards": [{
-                "prefix": "cardSummary",
-                "id": 1001,
-                "class": " userSummaryClass",
+        var tmpDiv = $('<div id="cardInfoSummaryWrapper"><b>OWF User Summary: </b><br/><div id="cardInfoSummary" class="cardInfo"></div><br/><hr/></div>');
+        tmpDiv.appendTo(self._dataDiv);
+        var html = this._card.initialize({
+            "1001": {
                 "key": "Total Stacks",
                 "value": self._OWF.user.summary.totalStacks
-            }, {
-                "prefix": "cardSummary",
-                "id": 1002,
-                "class": " userSummaryClass",
+            },
+            "1002": {
                 "key": "Total Groups",
                 "value": self._OWF.user.summary.totalGroups
-            }, {
-                "prefix": "cardSummary",
-                "id": 1003,
-                "class": " userSummaryClass",
+            },
+            "1003": {
                 "key": "Real Name",
                 "value": self._OWF.user.summary.realName
-            }, {
-                "prefix": "cardSummary",
-                "id": 1004,
-                "class": " userInfoClass",
+            },
+            "1004": {
                 "key": "Total Widgets",
                 "value": self._OWF.user.summary.totalWidgets
-            }, {
-                "prefix": "cardSummary",
-                "id": 1005,
-                "class": " userSummaryClass",
+            },
+            "1005": {
                 "key": "Total Dashboards",
                 "value": self._OWF.user.summary.totalDashboards
-            }]
-        });
-
-        $(html).appendTo(tmpDiv);
-        tmpDiv.appendTo(self._dataDiv);
-        self._dataDiv.append("<br/><hr/>");
-
-        // global event for all card classes
-        $("body").off("click", ".userSummaryClass");
-        $("body").on("click", ".userSummaryClass", function (event) {
-            //self._infoDiv.append(".. clicked: " + this.id + ", " + $(this).data("id") + "<br/>");
-            self.onClickSummaryInfo(this);
+            }
+        }, {
+            "prefix": "cardSummary",
+            "class": "userSummaryClass",
+            "element": "cardInfoSummary",
+            "append": true,
+            "callback": self.onClickSummaryInfo.bind(self)
         });
 
         self.displayNotification("retrieving user summary complete", "info");
@@ -801,36 +862,19 @@ var WidgetObject = (function () {
             self._OWF.user.groups[item.name].id = item.id;
         });
 
-        // display the user info
-        self._dataDiv.append("<b>OWF User Info (groups): </b><br/>");
-        //self._dataDiv.append(JSON.stringify(self._OWF.user.groups));
-        
+        // remove old info from the div
+        $("#cardInfoGroupWrapper").remove();
+        //var user = _.omit(self._OWF.user, ["summary", "groups", "widgets", "dashboards"]);
+
         var count = 0;
-        var tmpDiv = $('<div class="cardInfo"></div>');
-
-        var rawData = JSON.parse(JSON.stringify(self._OWF.user.groups));
-        var data = {"cards": {}};
-        $.each(rawData, function(key, value) {
-            // store card in array for handlebars
-            data.cards[key] = [];
-
-            // update value to include card properties
-            data.cards[key].prefix = "cardGroup";
-            data.cards[key].class = " userGroupClass",
-
-            data.cards[key].push(value);
-        });
-        var html = this._cardProperty.createCard(data);
-        
-        $(html).appendTo(tmpDiv);
+        var tmpDiv = $('<div id="cardInfoGroupWrapper"><b>OWF User Group(s): </b><br/><div id="cardInfoGroup" class="cardInfo"></div><br/><hr/></div>');
         tmpDiv.appendTo(self._dataDiv);
-        self._dataDiv.append("<br/><hr/>");
-
-        // global event for all card classes
-        $("body").off("click", ".userGroupClass");
-        $("body").on("click", ".userGroupClass", function (event) {
-            //self._infoDiv.append(".. clicked: " + this.id + ", " + $(this).data("id") + "<br/>");
-            self.onClickGroupInfo(this);
+        var html = this._cardProperty.initialize(self._OWF.user.groups, {
+            "prefix": "cardGroup",
+            "class": "userGroupClass",
+            "element": "cardInfoGroup",
+            "append": true,
+            "callback": self.onClickGroupInfo.bind(self)
         });
 
         self.displayNotification("retrieving user group info complete", "info");
@@ -869,36 +913,19 @@ var WidgetObject = (function () {
             self._OWF.user.widgets[item.value.originalName].path = item.value.path;
         });
 
-        // display the user info
-        self._dataDiv.append("<b>OWF User Info (widgets): </b><br/>");
-        //self._dataDiv.append(JSON.stringify(self._OWF.user.widgets));
-        
+        // remove old info from the div
+        $("#cardInfoWidgetWrapper").remove();
+        //var user = _.omit(self._OWF.user, ["summary", "groups", "widgets", "dashboards"]);
+
         var count = 0;
-        var tmpDiv = $('<div class="cardInfo"></div>');
-
-        var rawData = JSON.parse(JSON.stringify(self._OWF.user.widgets));
-        var data = {"cards": {}};
-        $.each(rawData, function(key, value) {
-            // store card in array for handlebars
-            data.cards[key] = [];
-
-            // update value to include card properties
-            data.cards[key].prefix = "cardWidget";
-            data.cards[key].class = " userWidgetClass",
-
-            data.cards[key].push(value);
-        });
-        var html = this._cardWidget.createCard(data);
-        
-        $(html).appendTo(tmpDiv);
+        var tmpDiv = $('<div id="cardInfoWidgetWrapper"><b>OWF User Widget(s): </b><br/><div id="cardInfoWidget" class="cardInfo"></div><br/><hr/></div>');
         tmpDiv.appendTo(self._dataDiv);
-        self._dataDiv.append("<br/><hr/>");
-
-        // global event for all card classes
-        $("body").off("click", ".userWidgetClass");
-        $("body").on("click", ".userWidgetClass", function (event) {
-            //self._infoDiv.append(".. clicked: " + this.id + ", " + $(this).data("id") + "<br/>");
-            self.onClickWidgetInfo(this);
+        var html = this._cardProperty.initialize(self._OWF.user.widgets, {
+            "prefix": "cardWidget",
+            "class": "userWidgetClass",
+            "element": "cardInfoWidget",
+            "append": true,
+            "callback": self.onClickWidgetInfo.bind(self)
         });
 
         self.displayNotification("retrieving widget info complete", "info");
@@ -941,36 +968,19 @@ var WidgetObject = (function () {
             self._OWF.user.dashboards[item.name].createdDate = item.createdDate;
         });
 
-        // display the user info
-        self._dataDiv.append("<b>OWF User Info (dashboards): </b><br/>");
-        //self._dataDiv.append(JSON.stringify(self._OWF.user.dashboards));
-        
+        // remove old info from the div
+        $("#cardInfoDashboardWrapper").remove();
+        //var user = _.omit(self._OWF.user, ["summary", "groups", "widgets", "dashboards"]);
+
         var count = 0;
-        var tmpDiv = $('<div class="cardInfo"></div>');
-
-        var rawData = JSON.parse(JSON.stringify(self._OWF.user.dashboards));
-        var data = {"cards": {}};
-        $.each(rawData, function(key, value) {
-            // store card in array for handlebars
-            data.cards[key] = [];
-
-            // update value to include card properties
-            data.cards[key].prefix = "cardDashboard";
-            data.cards[key].class = " userDashboardClass",
-
-            data.cards[key].push(value);
-        });
-        var html = this._cardDashboard.createCard(data);
-        
-        $(html).appendTo(tmpDiv);
+        var tmpDiv = $('<div id="cardInfoDashboardWrapper"><b>OWF User Dashboard(s): </b><br/><div id="cardInfoDashboard" class="cardInfo"></div><br/><hr/></div>');
         tmpDiv.appendTo(self._dataDiv);
-        self._dataDiv.append("<br/><hr/>");
-
-        // global event for all card classes
-        $("body").off("click", ".userDashboardClass");
-        $("body").on("click", ".userDashboardClass", function (event) {
-            //self._infoDiv.append(".. clicked: " + this.id + ", " + $(this).data("id") + "<br/>");
-            self.onClickDashboardInfo(this);
+        var html = this._cardDashboard.initialize(self._OWF.user.dashboards, {
+            "prefix": "cardDashboard",
+            "class": "userDashboardClass",
+            "element": "cardInfoDashboard",
+            "append": true,
+            "callback": self.onClickDashboardInfo.bind(self)
         });
 
         self.displayNotification("retrieving dashboard info complete", "info");
@@ -985,7 +995,26 @@ var WidgetObject = (function () {
         }
     }
 
+    Widget.prototype.getAbout = function () {
+        var self = this;
+
+        var html = $(
+            "<div style='text-align:center;'><h2>OWF Base Widget</h2></div>" +
+            "<hr/>" +
+            "<div style='text-align:center;'><p>Version 1.01</p></div>" +
+            "<div style='text-align:center;'><h3>Dependencies</h3></div>" +
+            "<ul>" +
+            "<li>Dojo, Handlebars</li>" +
+            "<li>JQuery, Lodash</li>" +
+            "<li>Luxon, Notify</li>" +
+            "<li>OWF</li></ul>");
+        $.notify({
+            title: html
+        }, {
+            autohide: true
+        });
+    }
     // -----  end  ----- widget functions        -----  end  ----
 
     return Widget;
-})();
+});

@@ -1,7 +1,5 @@
-{{#each cards as |card cardId|}}
-<div id="{{#if card.prefix}}{{card.prefix}}{{else}}card{{/if}}-{{cardId}}" class="cardProperty{{card.class}}" data-id="{{card.id}}">
-    <b>{{@key}}</b>
-    {{#each this}}
+<div id="{{#if prefix}}{{prefix}}{{else}}card{{/if}}-{{cardId}}" class="cardDashboard {{class}}" data-id="{{id}}">
+    <b>{{key}}</b>
     <div class="cardInfo">
         <div class="cardDashboardDetails">
             <b>Description</b> - {{description}}
@@ -16,6 +14,4 @@
             <b>CreatedDate</b> - {{createdDate}}
         </div>
     </div>
-    {{/each}}
 </div>
-{{/each}}
