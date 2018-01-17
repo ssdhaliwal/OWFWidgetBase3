@@ -93,7 +93,7 @@ define(function() {
             self._data[index] = item;
             html += item.html;
         });
-
+        
         // add to the document element
         if (!self._options.append || (self._options.append === false)) {
             $("#" + self._options.element).children().remove();

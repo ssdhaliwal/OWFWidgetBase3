@@ -920,7 +920,7 @@ define(["handlebars", "lodash", "luxon",
         var count = 0;
         var tmpDiv = $('<div id="cardInfoWidgetWrapper"><b>OWF User Widget(s): </b><br/><div id="cardInfoWidget" class="cardInfo"></div><br/><hr/></div>');
         tmpDiv.appendTo(self._dataDiv);
-        var html = this._cardProperty.initialize(self._OWF.user.widgets, {
+        var html = this._cardWidget.initialize(self._OWF.user.widgets, {
             "prefix": "cardWidget",
             "class": "userWidgetClass",
             "element": "cardInfoWidget",
