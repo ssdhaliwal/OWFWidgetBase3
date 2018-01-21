@@ -1,5 +1,6 @@
 # OWFWidgetBase
 ## Base widget example on how to use Dojo/JQuery/Handlebars/Luxon/Lodash/Notify etc
+## 12Jan/18 - added es-shims for es5/6 for compatibility with some older browsers
 
 #### The widget displays buttons in menu bar using Dojo Digit/Menu... and formatting using Bootstrap/Dojo themes for grid layout.  It also uses Handlebars to create four components Card, CardDashboard, CardProperty, and CardWidget; to display details of the user properties.
 
