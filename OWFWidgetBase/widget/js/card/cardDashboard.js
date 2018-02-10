@@ -1,5 +1,5 @@
 // widget object wrapper
-define(function() {
+define(function () {
     // static variables
 
     // static objects
@@ -19,114 +19,91 @@ define(function() {
         // widget elements
         this._source = null;
         this._template = null;
-
-        // bound event listener (bind returns new address)
-        this._onClick = null;
     }
 
     // ----- start ----- common card   functions ----- start ----
-    CardDashboard.prototype.isReady = function() {
+    CardDashboard.prototype.isReady = function () {
         var self = this;
-        
+
         return self._ready;
     }
 
-    CardDashboard.prototype.importCSS = function() {
+    CardDashboard.prototype.importCSS = function () {
         var self = this;
+        var ver = "?ver=" + (new Date()).getTime();
 
         $('<link>')
             .appendTo('head')
             .attr({
                 type: 'text/css',
                 rel: 'stylesheet',
-                href: 'widget/js/card/cardDashboard.css'
+                href: 'widget/js/card/cardDashboard.css' + ver
             });
     }
 
-    CardDashboard.prototype.importHTML = function(data) {
+    CardDashboard.prototype.importHTML = function () {
         var self = this;
 
-        $.get("widget/js/card/cardDashboard.html", function(response) {
+        $.get("widget/js/card/cardDashboard.html", function (response) {
             self._source = response;
             self._template = Handlebars.compile(self._source);
 
-            // create reference to the onClick for bind
-            self._onClick = self.onClick.bind(self);
-
             self._ready = true;
-        }).done(function () {
-            self._create(data);
         });
     }
 
-    CardDashboard.prototype.initialize = function(data, options) {
+    CardDashboard.prototype.initialize = function () {
         var self = this;
 
         self.importCSS();
-        self.importHTML(data);
-
-        self._options = options;
+        self.importHTML();
     }
 
-    CardDashboard.prototype._create = function (data) {
+    CardDashboard.prototype.createCard = function (data, options) {
         var self = this;
 
         // local variables
         var html = "";
+
+        // create reference to the onClick for bind
         var i = 0,
-            dataId;
+            dataId = "",
+            mixin = {};
 
-        // initialize the object
-        self._data = {};
-
+        // initalize the object
         $.each(data, function (index, item) {
             item.cardId = i++;
-            item.prefix = self._options.prefix;
-            item.class = self._options.class;
-            item.key = index;
+            item.prefix = options.prefix;
+            item.class = options.class;
             item.id = index;
 
-            // parse template with data
+            item.key = index;
+            
             item.html = self._template(item);
 
-            // store the data
-            self._data[index] = item;
+            mixin[index] = item;
             html += item.html;
         });
 
         // add to the document element
-        if (!self._options.append || (self._options.append === false)) {
-            $("#" + self._options.element).children().remove();
-            $("#" + self._options.element).html("");
+        if (!options.append || (options.append === false)) {
+            $("#" + options.element).children().remove();
+            $("#" + options.element).html("");
         }
-        $(html).appendTo($("#" + self._options.element));
+        $(html).appendTo($("#" + options.element));
 
         // link click event to the todo
-        var todos = $("." + self._options.class);
-        for (i = 0; i < todos.length; i++) {
-            dataId = $(todos[i]).attr("data-id");
-            self._data[dataId].element = $(todos[i])[0];
+        var cards = $(".card-" + options.class);
+        for (i = 0; i < cards.length; i++) {
+            dataId = $(cards[i]).attr("data-id");
+            mixin[dataId].element = $(cards[i])[0];
 
-            // remove and link event listener (to prevent duplication)
-            todos[i].removeEventListener("click", self._onClick);
-            todos[i].addEventListener("click", self._onClick);
-        }
-    }
-
-    CardDashboard.prototype.onClick = function (event) {
-        var self = this;
-
-        var target = $(event.target);
-
-        // if child element is clicked; bubble up to the parent as target
-        if (!target.hasClass("." + self._options.class)) {
-            target = target.closest("." + self._options.class);
+            // assign click to the main element
+            cards[i].removeEventListener("click", options.callback);
+            cards[i].addEventListener("click", options.callback);
         }
 
-        // call the parent
-        if (self._options.callback) {
-            self._options.callback(target);
-        }
+        return mixin;
     }
     // -----  end  ----- common card   functions -----  end  ----
 

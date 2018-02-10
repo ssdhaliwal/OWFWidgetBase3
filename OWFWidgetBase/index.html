@@ -12,37 +12,140 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- load dojo config before other css/scripts -->
-    <script src="./dojoConfig.js"></script>
+    <!-- add css for core items -->
+    <link rel="stylesheet" href="vendor/css/dragAndDrop.css" />
+    <link rel="stylesheet" href="vendor/fonts/material-icons.css" />
+    <link rel="stylesheet" href="vendor/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="vendor/css/jquery.smartmenus.bootstrap.css" />
 
     <!-- dynamic loading of scripts for cache busting -->
     <script type="text/javascript">
-        var loadCSS = function (src) {
-            document.writeln('<link rel="stylesheet" href="' + src + '">');
+        var loadCSS = function (refCSS) {
+            //document.writeln('<link rel="stylesheet" href="' + refCSS + '">');
+            var eCSS = document.createElement("link");
+            eCSS.rel = "stylesheet";
+            eCSS.href = refCSS;
+
+            //document.getElementsByTagName('head')[0].appendChild(eCSS);
+            document.head.appendChild(eCSS);
         }
-        var loadJS = function (src) {
-            document.writeln('<script src="' + src + '"><\/script>');
+        var loadJS = function (refJS, data) {
+            //document.writeln('<script src="' + refJS + '"><\/script>');
+            var eJS = document.createElement("script");
+            eJS.type = 'text/javascript';
+            eJS.src = refJS;
+            eJS.async = false;
+
+            // loop throught the data array and update the script tag
+            // cannot update the object directly; have to use setAttribute
+            if (data) {
+                data.forEach(function (item) {
+                    for (var prop in item) {
+                        eJS.setAttribute(prop, item[prop]);
+                    };
+                });
+            }
+
+            //document.getElementsByTagName('head')[0].appendChild(eJS);
+            document.head.appendChild(eJS);
         }
     </script>
+
+    <!-- add script for core items -->
+    <script src="vendor/js/es5-shim.min.js"></script>
+    <script src="vendor/js/es6-shim.min.js"></script>
+    <script type="text/javascript" src="vendor/js/owf-widget.min.js"></script>
 </head>
 
-<body class="claro">
+<body>
     <script type="text/javascript">
         var ver = "ver=" + (new Date()).getTime();
-
-        // add css for core items
-        loadCSS("vendor/css/dragAndDrop.css?" + ver);
-        loadCSS("vendor/dojo/dijit/themes/claro/claro.css?" + ver);
-        loadCSS("vendor/fonts/material-icons.css?" + ver);
-        loadCSS("vendor/css/bootstrap.min.css?" + ver);
 
         // add css for widget specific
         loadCSS("widget/css/base_style.css?" + ver);
         loadCSS("widget/css/widget_style.css?" + ver);
-    </script>
 
+        //The location is assumed to be at /<context>/js/eventing/rpc_relay.uncompressed.html if it is not set
+        OWF.relayFile = "../../vendor/js/eventing/rpc_relay.uncompressed.html";
+        owfdojo.config.dojoBlankHtmlUrl = '../../vendor/js/dojo-1.5.0-windowname-only/dojo/resources/blank.html';
+
+        // add vendor javascripts
+        if (OWF.ready(loadJS("vendor/js/require-2.3.5.min.js?" + ver, [{
+                "data-main": "./app"
+            }])));
+    </script>
     <!-- Navbar -->
-    <div id="menuWrapper"></div>
+    <div id="navbar" class="navbar navbar-default" role="navigation">
+        <div id="navbar" class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">WidgetBase</a>
+        </div>
+        <div class="navbar-collapse collapse">
+
+            <!-- Left nav -->
+            <ul class="nav navbar-nav">
+                <li>
+                    <a href="#">User
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#" id="mnuUserInfo">Info</a>
+                        </li>
+                        <li>
+                            <a href="#" id="mnuUserUUID" class="disabled">UUID</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li class="dropdown-header">Status</li>
+                        <li>
+                            <a href="#" id="mnuUserCounts" class="disabled">Summary</a>
+                        </li>
+                        <li>
+                            <a href="#">View(s)
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="#" id="mnuUserGroups" class="disabled">Groups</a>
+                                </li>
+                                <li>
+                                    <a href="#" id="mnuUserWidgets" class="disabled">Widgets</a>
+                                </li>
+                                <li>
+                                    <a href="#" id="mnuUserDashboards" class="disabled">Dashboards</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- Right nav -->
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" class="active" id="help">Help
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#" id="mnuAbout">About</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#" id="mnuReset">Reset</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+        </div>
+        <!--/.nav-collapse -->
+    </div>
 
     <container>
         <div class="container-fluid">
@@ -52,20 +155,9 @@
             </div>
         </div>
     </container>
-
     <div id="waitingImage" class="waitingImage">
         <image src="widget/images/loading_blue.gif" width="50px" height="50px"></image>
     </div>
-
-    <script src="vendor/js/es5-shim.min.js"></script>
-    <script src="vendor/js/es6-shim.min.js"></script>
-    <script src="vendor/dojo/dojo/dojo.js"></script>
-    <script src="vendor/js/owf-widget.min.js"></script>
-    <script src="vendor/js/jquery-3.2.1.min.js"></script>
-
-    <script src="vendor/js/date.format-1.2.3.js"></script>
-
-    <script src="./app.js"></script>
 </body>
 
 </html>

@@ -15,19 +15,7 @@
     font-size: 10px;
 }
 
-.cardInfo-locked {
-    background: rgb(236, 230, 230);
-}
 
-.cardInfo-default {
-    color: rgb(206, 118, 47);
-    background: rgb(236, 230, 230);
-}
-
-.cardInfo-group {
-    color: rgb(236, 83, 83);
-    background: rgb(236, 230, 230);
-}
 /* On mouse-over, add a deeper shadow */
 
 .cardDashboard:hover {

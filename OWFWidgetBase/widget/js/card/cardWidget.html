@@ -1,14 +1,13 @@
-<div id="{{#if prefix}}{{prefix}}{{else}}card{{/if}}-{{cardId}}" class="cardWidget {{class}}" data-id="{{id}}">
+<div id="{{#if prefix}}{{prefix}}{{else}}card{{/if}}-{{cardId}}" 
+    class="card cardWidget{{#if class}} card-{{class}}{{/if}}" 
+    data-id="{{id}}">
     <b>{{key}}</b>
-    <div class="cardInfo cardInfo-{{#if singleton}}singleton{{else}}multiple{{/if}} cardInfo-{{#if background}}background{{else}}foreground{{/if}} cardInfo-{{#if visible}}visible{{else}}hidden{{/if}} cardInfo-{{#if disabled}}disabled{{else}}active{{/if}}">
+    <div class="cardInfo">
         <div class="cardWidgetDetails">
             <b>Name</b> - {{status}}
         </div>
         <div class="cardWidgetDetails">
             <b>Description</b> - {{description}}
-        </div>
-        <div class="cardWidgetDetails">
-            <b>Disabled</b> - {{disabled}}
         </div>
         <div class="cardWidgetDetails">
             <b>Visible</b> - {{visible}}

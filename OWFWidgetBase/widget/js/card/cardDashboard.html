@@ -1,6 +1,8 @@
-<div id="{{#if prefix}}{{prefix}}{{else}}card{{/if}}-{{cardId}}" class="cardDashboard {{class}}" data-id="{{id}}">
+<div id="{{#if prefix}}{{prefix}}{{else}}card{{/if}}-{{cardId}}" 
+    class="card cardDashboard{{#if class}} card-{{class}}{{/if}}" 
+    data-id="{{id}}">
     <b>{{key}}</b>
-    <div class="cardInfo cardInfo-{{#if isDefault}}default{{else}}notDefault{{/if}} cardInfo-{{#if locked}}locked{{else}}notLocked{{/if}} cardInfo-{{#if isGroupDashboard}}group{{else}}notGroup{{/if}}">
+    <div class="cardInfo">
         <div class="cardDashboardDetails">
             <b>Description</b> - {{description}}
         </div>

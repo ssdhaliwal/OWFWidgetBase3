@@ -1,6 +1,8 @@
-<div id="{{#if prefix}}{{prefix}}{{else}}card{{/if}}-{{cardId}}" class="cardProperty {{class}}" data-id="{{id}}">
+<div id="{{#if prefix}}{{prefix}}{{else}}card{{/if}}-{{cardId}}" 
+    class="card cardProperty{{#if class}} card-{{class}}{{/if}}" 
+    data-id="{{id}}">
     <b>{{key}}</b>
-    <div class="cardInfo cardInfo-{{status}}">
+    <div class="cardInfo">
         <div class="cardPropertyDetails">
             <b>Status</b> - {{status}}
         </div>
