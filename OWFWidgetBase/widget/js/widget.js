@@ -44,7 +44,9 @@ define([], function () {
     // ----- start ----- common widget functions ----- start ----
     // Enable logging
     Widget.prototype.setLogThreshold = function () {
-        this._LoggerAppender.setThreshold(log4javascript.Level.INFO);
+        var self = this;
+
+        self._LoggerAppender.setThreshold(log4javascript.Level.INFO);
         OWF.Log.setEnabled(false);
     }
 
@@ -551,7 +553,7 @@ define([], function () {
         var count = 0;
         var tmpDiv = $('<div id="cardOWFInfoWrapper"><b>OWF Info: </b><br/><div id="cardOWFInfo" class="cardInfo"></div><br/><hr/></div>');
         tmpDiv.appendTo(self._dataDiv);
-        var html = this._card.createCard({
+        var html = self._card.create({
             "1001": {
                 "key": "Container Name",
                 "value": self._OWF.containerName
@@ -645,7 +647,7 @@ define([], function () {
         var count = 0;
         var tmpDiv = $('<div id="cardInfoUSERWrapper"><b>OWF User: </b><br/><div id="cardInfoUSER" class="cardInfo"></div><br/><hr/></div>');
         tmpDiv.appendTo(self._dataDiv);
-        var html = this._card.createCard({
+        var html = self._card.create({
             "1001": {
                 "key": "User Name",
                 "value": self._OWF.user.currentUserName
@@ -723,7 +725,7 @@ define([], function () {
         var count = 0;
         var tmpDiv = $('<div id="cardInfoUUIDWrapper"><b>OWF User UUID: </b><br/><div id="cardInfoUUID" class="cardInfo"></div><br/><hr/></div>');
         tmpDiv.appendTo(self._dataDiv);
-        var html = this._card.createCard({
+        var html = self._card.create({
             "1001": {
                 "key": "UUID",
                 "value": self._OWF.user.uuid
@@ -824,7 +826,7 @@ define([], function () {
         var count = 0;
         var tmpDiv = $('<div id="cardInfoSummaryWrapper"><b>OWF User Summary: </b><br/><div id="cardInfoSummary" class="cardInfo"></div><br/><hr/></div>');
         tmpDiv.appendTo(self._dataDiv);
-        var html = this._card.createCard({
+        var html = self._card.create({
             "1001": {
                 "key": "Total Stacks",
                 "value": self._OWF.user.summary.totalStacks
@@ -902,7 +904,7 @@ define([], function () {
         tmpDiv.appendTo(self._dataDiv);
 
         var rawData = JSON.parse(JSON.stringify(self._OWF.user.groups));
-        var html = this._cardProperty.createCard(rawData, {
+        var html = self._cardProperty.create(rawData, {
             "prefix": "cardGroup",
             "class": "userGroupClass",
             "element": "cardInfoGroup",
@@ -963,7 +965,7 @@ define([], function () {
         tmpDiv.appendTo(self._dataDiv);
 
         var rawData = JSON.parse(JSON.stringify(self._OWF.user.widgets));
-        var html = this._cardWidget.createCard(rawData, {
+        var html = self._cardWidget.create(rawData, {
             "prefix": "cardWidget",
             "class": "userWidgetClass",
             "element": "cardInfoWidget",
@@ -1028,7 +1030,7 @@ define([], function () {
         tmpDiv.appendTo(self._dataDiv);
 
         var rawData = JSON.parse(JSON.stringify(self._OWF.user.dashboards));
-        var html = this._cardDashboard.createCard(rawData, {
+        var html = self._cardDashboard.createCard(rawData, {
             "prefix": "cardDashboard",
             "class": "userDashboardClass",
             "element": "cardInfoDashboard",

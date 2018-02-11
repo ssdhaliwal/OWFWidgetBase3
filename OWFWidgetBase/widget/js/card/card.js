@@ -19,6 +19,9 @@ define(function () {
         // widget elements
         this._source = null;
         this._template = null;
+
+        // store for individual components
+        this._store = {};
     }
 
     // ----- start ----- common card   functions ----- start ----
@@ -59,7 +62,24 @@ define(function () {
         self.importHTML();
     }
 
-    Card.prototype.createCard = function (data, options) {
+    Card.prototype._updateEvents = function (options) {
+        var self = this;
+
+        // store all items and link click event to the todo
+        var cards = $(".card-" + options.class);
+        for (i = 0; i < cards.length; i++) {
+            dataId = $(cards[i]).attr("data-id");
+            self._store[options.class]["data"][dataId].element = $(cards[i])[0];
+
+            // assign click to the main element
+            if (options.callback) {
+                cards[i].removeEventListener("click", options.callback);
+                cards[i].addEventListener("click", options.callback);
+            }
+        }
+    }
+
+    Card.prototype.create = function (data, options) {
         var self = this;
 
         // local variables
@@ -67,41 +87,35 @@ define(function () {
 
         // create reference to the onClick for bind
         var i = 0,
-            dataId = "",
-            mixin = {};
+            dataId = "";
+
+        // add to the document element
+        $("#" + options.element).children().remove();
+        $("#" + options.element).html("");
+
+        self._store[options.class] = {};
+        self._store[options.class]["data"] = {};
+        self._store[options.class]["options"] = options;
 
         // initalize the object
         $.each(data, function (index, item) {
             item.cardId = i++;
             item.prefix = options.prefix;
             item.class = options.class;
-            item.id = index;
+            item.id = index.replace(new RegExp(' ', 'g'), '');
 
             item.html = self._template(item);
 
-            mixin[index] = item;
+            // append to others and update item in store
             html += item.html;
+            self._store[options.class]["data"][index] = item;
         });
 
         // add to the document element
-        if (!options.append || (options.append === false)) {
-            $("#" + options.element).children().remove();
-            $("#" + options.element).html("");
-        }
         $(html).appendTo($("#" + options.element));
+        self._updateEvents(options);
 
-        // link click event to the todo
-        var cards = $(".card-" + options.class);
-        for (i = 0; i < cards.length; i++) {
-            dataId = $(cards[i]).attr("data-id");
-            mixin[dataId].element = $(cards[i])[0];
-
-            // assign click to the main element
-            cards[i].removeEventListener("click", options.callback);
-            cards[i].addEventListener("click", options.callback);
-        }
-
-        return mixin;
+        return self._store[options.class];
     }
     // -----  end  ----- common card   functions -----  end  ----
 
