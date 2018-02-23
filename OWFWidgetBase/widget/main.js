@@ -1,7 +1,6 @@
 define([
     'js/sharedConfig', 'js/widget', 'js/card/card', 'js/card/cardProperty',
-    'js/card/cardWidget', 'js/card/cardDashboard',
-    '../vendor/js/date.format-1.2.3'
+    'js/card/cardWidget', 'js/card/cardDashboard'
 ], function (SharedConfig, Widget, Card, CardProperty, CardWidget, CardDashboard) {
     return {
         SharedConfig: SharedConfig,

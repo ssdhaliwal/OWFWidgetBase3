@@ -319,6 +319,11 @@ define([], function () {
 
             // display the base OWF info
             self.getOwfInfo();
+            setInterval(function() {
+                var ver = "ver=" + (new Date()).getTime();
+
+                $("#waitingImageIcon").prop("src", "widget/images/loading_blue.gif?" + ver)
+            }, 100000);
 
         }, 1000);
     }

@@ -1,5 +1,5 @@
 // widget object wrapper
-define(function () {
+define([], function () {
     // static variables
 
     // static objects

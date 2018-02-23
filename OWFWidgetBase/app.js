@@ -3,49 +3,21 @@ requirejs.config({
     baseUrl: "widget",
     paths: {
         main: "main",
-        card: "js/card/card",
-        cardProperty: "js/card/cardProperty",
-        cardWidget: "js/card/cardWidget",
-        cardDashboard: "js/card/cardDashboard",
-        jquery: "../vendor/js/jquery-3.2.1.min",
-        lodash: "../vendor/js/lodash-4.17.4.min",
-        handlebars: "../vendor/js/handlebars-4.0.11.min",
-        bootstrap: "../vendor/js/bootstrap-3.3.7.min",
-        smartmenus: "../vendor/js/jquery.smartmenus",
-        smartmenus2: "../vendor/js/jquery.smartmenus.bootstrap",
-        notify: "../vendor/js/bootstrap-notify.min",
+        card: "js/card/cardTodo",
+        popup: "js/popup/popup",
         luxon: "../vendor/js/luxon"
-        //underscore: "../vendor/js/underscore-1.8.3.min",
-        //backbone: "../vendor/js/backbone.min"
     },
     shim: {
-        //'underscore': {
-        //    exports: '_'
-        //},
-        //'backbone': {
-        //    deps: ['jquery', 'underscore'],
-        //    exports: 'Backbone'
-        //},
-        "smartmenus2": {
-            "deps": ['smartmenus']
-        },
-        "smartmenus": {
-            "deps": ['jquery']
-        },
-        "bootstrap": {
-            "deps": ['jquery']
-        },
-        'handlebars': {
-            exports: 'Handlebars'
-        }
+    },
+    map: {
     }
 });
 
-requirejs(['jquery', 'lodash', 'handlebars', 'notify', 'luxon', 'main', 'bootstrap', 'smartmenus', 'smartmenus2'],
-    function ($, lo, handlebars, notify, luxon, main) {
+requirejs(['luxon', 'main'],
+    function (luxon, main) {
         owfdojo.addOnLoad(function () {
             $(document).ready(function () {
-                window.Handlebars = handlebars;
+                //window.Handlebars = handlebars;
                 window.Luxon = luxon;
 
                 // https://stackoverflow.com/questions/8853396/logical-operator-in-a-handlebars-js-if-conditional

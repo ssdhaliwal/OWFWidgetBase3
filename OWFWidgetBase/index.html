@@ -13,10 +13,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- add css for core items -->
-    <link rel="stylesheet" href="vendor/css/dragAndDrop.css" />
-    <link rel="stylesheet" href="vendor/fonts/material-icons.css" />
-    <link rel="stylesheet" href="vendor/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="vendor/css/jquery.smartmenus.bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/css/dragAndDrop.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/fonts/material-icons.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/css/fontawesome-all.min.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/fonts/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/css/semantic.min.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/css/alpaca.min.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/css/jquery-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/css/jquery-ui.structure.min.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/css/jquery-ui.theme.min.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/css/jquery.smartmenus.bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/css/bootstrap-multiselect.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/css/dataTables.bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/css/bootstrap-datetimepicker.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/css/jquery.spectrum.colorpicker.css" />
 
     <!-- dynamic loading of scripts for cache busting -->
     <script type="text/javascript">
@@ -52,9 +64,41 @@
     </script>
 
     <!-- add script for core items -->
-    <script src="vendor/js/es5-shim.min.js"></script>
-    <script src="vendor/js/es6-shim.min.js"></script>
+    <!--script type="text/javascript" src="vendor/js/es5-shim.min.js"></script-->
+    <script type="text/javascript" src="vendor/js/es6-shim.min.js"></script>
+    <!--script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script-->
+    <script type="text/javascript" src="vendor/js/fontawesome-all.min.js"></script>
     <script type="text/javascript" src="vendor/js/owf-widget.min.js"></script>
+    <script type="text/javascript" src="vendor/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="vendor/js/handlebars-4.0.11.min.js"></script>
+    <script type="text/javascript" src="vendor/js/underscore-1.8.3.min.js"></script>
+    <script type="text/javascript" src="vendor/js/lodash-4.17.4.min.js"></script>
+    <script type="text/javascript" src="vendor/js/bootstrap-3.3.7.min.js"></script>
+    <script type="text/javascript" src="vendor/js/moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="vendor/js/alpaca.min.js"></script>
+    <script type="text/javascript" src="vendor/js/backbone.min.js"></script>
+    <script type="text/javascript" src="vendor/js/date.format-1.2.3.js"></script>
+    <script type="text/javascript" src="vendor/js/bootstrap/collapse.js"></script>
+    <script type="text/javascript" src="vendor/js/bootstrap/transition.js"></script>
+    <script type="text/javascript" src="vendor/js/bootstrap-multiselect.js"></script>
+    <script type="text/javascript" src="vendor/js/bootstrap-notify.min.js"></script>
+    <script type="text/javascript" src="vendor/js/bootstrap-tokenfield.min.js"></script>
+    <script type="text/javascript" src="vendor/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="vendor/js/bloodhound.min.js"></script>
+    <script type="text/javascript" src="vendor/js/typeahead.bundle.min.js"></script>
+    <script type="text/javascript" src="vendor/js/jquery.smartmenus.js"></script>
+    <script type="text/javascript" src="vendor/js/jquery.smartmenus.bootstrap.js"></script>
+    <script type="text/javascript" src="vendor/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="vendor/js/jquery.maskedinput.min.js"></script>
+    <script type="text/javascript" src="vendor/js/jquery.price_format.min.js"></script>
+    <script type="text/javascript" src="vendor/js/jquery.spectrum.colorpicker.js"></script>
+    <script type="text/javascript" src="vendor/js/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript" src="vendor/js/semantic.min.js"></script>
+
+    <!--script type="text/javascript" src="vendor/js/jquery.dataTables.js"></script-->
+    <!--script type="text/javascript" src="vendor/js/dataTables.bootstrap.js"></script-->
+    <!--script type="text/javascript" src="vendor/js/dataTables.rowOrder.js"></script-->
+    <script type="text/javascript" src="vendor/js/datatables.min.js"></script>
 </head>
 
 <body>
@@ -156,7 +200,7 @@
         </div>
     </container>
     <div id="waitingImage" class="waitingImage">
-        <image src="widget/images/loading_blue.gif" width="50px" height="50px"></image>
+        <image id="waitingImageIcon" src="widget/images/loading_blue.gif" width="50px" height="50px"></image>
     </div>
 </body>
 
