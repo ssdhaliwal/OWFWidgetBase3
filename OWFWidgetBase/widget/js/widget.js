@@ -319,6 +319,8 @@ define([], function () {
 
             // display the base OWF info
             self.getOwfInfo();
+
+            // function to prevent session timeouts from idle
             setInterval(function() {
                 var ver = "ver=" + (new Date()).getTime();
 

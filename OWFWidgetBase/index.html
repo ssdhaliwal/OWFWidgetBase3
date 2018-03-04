@@ -114,9 +114,11 @@
         owfdojo.config.dojoBlankHtmlUrl = '../../vendor/js/dojo-1.5.0-windowname-only/dojo/resources/blank.html';
 
         // add vendor javascripts
-        if (OWF.ready(loadJS("vendor/js/require-2.3.5.min.js?" + ver, [{
-                "data-main": "./app"
-            }])));
+        if (OWF.ready(function () {
+                loadJS("vendor/js/require-2.3.5.min.js?" + ver, [{
+                    "data-main": "./app"
+                }]);
+            }));
     </script>
     <!-- Navbar -->
     <div id="navbar" class="navbar navbar-default" role="navigation">
